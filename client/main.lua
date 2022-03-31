@@ -1,5 +1,5 @@
 -- Variables
-
+local sharedWeapons = exports['qbr-core']:GetWeapons()
 local PlayerData, CurrentWeaponData, CanShoot, MultiplierAmount = {}, {}, true, 0
 local allowList = {
     `weapon_lasso`,
@@ -56,7 +56,7 @@ end)
 RegisterNetEvent("addAttachment", function(component)
     local ped = PlayerPedId()
     local weapon = GetSelectedPedWeapon(ped)
-    local WeaponData = QBCore.Shared.Weapons[weapon]
+    local WeaponData = sharedWeapons[weapon]
     GiveWeaponComponentToPed(ped, GetHashKey(WeaponData.name), GetHashKey(component))
 end)
 
@@ -84,8 +84,9 @@ end)
 RegisterNetEvent('weapon:client:AddAmmo', function(type, amount, itemData)
     local ped = PlayerPedId()
     local weapon = GetSelectedPedWeapon(ped)
+    local sharedItems = exports['qbr-core']:GetItems()
     if CurrentWeaponData then
-        if QBCore.Shared.Weapons[weapon]["name"] ~= "weapon_unarmed" and QBCore.Shared.Weapons[weapon]["ammotype"] == type:upper() then
+        if sharedWeapons[weapon]["name"] ~= "weapon_unarmed" and sharedWeapons[weapon]["ammotype"] == type:upper() then
             local total = Citizen.InvokeNative(0x015A522136D7F951, PlayerPedId(), weapon, Citizen.ResultAsInteger())
             local maxAmmo = Citizen.InvokeNative(0xDC16122C7A20C933, PlayerPedId(), weapon, Citizen.ResultAsInteger())
             if total < maxAmmo then
@@ -95,12 +96,12 @@ RegisterNetEvent('weapon:client:AddAmmo', function(type, amount, itemData)
                     disableMouse = false,
                     disableCombat = true,
                 }, {}, {}, {}, function() -- Done
-                    if QBCore.Shared.Weapons[weapon] then
+                    if sharedWeapons[weapon] then
                         Citizen.InvokeNative(0xB190BCA3F4042F95, ped, weapon, retval, 0xCA3454E6)
                         TaskReloadWeapon(ped)
                         TriggerServerEvent("weapons:server:AddWeaponAmmo", CurrentWeaponData, total + amount)
                         TriggerServerEvent('QBCore:Server:RemoveItem', itemData.name, 1, itemData.slot)
-                        TriggerEvent('inventory:client:ItemBox', QBCore.Shared.Items[itemData.name], "remove")
+                        TriggerEvent('inventory:client:ItemBox', sharedItems[itemData.name], "remove")
                         TriggerEvent('QBCore:Notify', Lang:t('success.reloaded'), "success")
                     end
                 end, function()
@@ -120,7 +121,7 @@ end)
 RegisterNetEvent("weapons:client:EquipAttachment", function(ItemData, attachment)
     local ped = PlayerPedId()
     local weapon = GetSelectedPedWeapon(ped)
-    local WeaponData = QBCore.Shared.Weapons[weapon]
+    local WeaponData = sharedWeapons[weapon]
     if weapon ~= `WEAPON_UNARMED` then
         WeaponData.name = WeaponData.name:upper()
         if WeaponAttachments[WeaponData.name] then
@@ -171,27 +172,27 @@ CreateThread(function()
                 if IsPedShooting(ped) or IsControlJustPressed(0, 24) then
                     local weapon = GetSelectedPedWeapon(ped)
                     if CanShoot then
-                        if weapon and weapon ~= 0 and QBCore.Shared.Weapons[weapon] then
+                        if weapon and weapon ~= 0 and sharedWeapons[weapon] then
                             local ammo = GetAmmoInPedWeapon(ped, weapon)
-                            if QBCore.Shared.Weapons[weapon]["name"] == "weapon_snowball" then
+                            if sharedWeapons[weapon]["name"] == "weapon_snowball" then
                                 TriggerServerEvent('QBCore:Server:RemoveItem', "snowball", 1)
-                            -- elseif QBCore.Shared.Weapons[weapon]["name"] == "weapon_pipebomb" then
+                            -- elseif sharedWeapons[weapon]["name"] == "weapon_pipebomb" then
                                 -- TriggerServerEvent('QBCore:Server:RemoveItem', "weapon_pipebomb", 1)
-                            -- elseif QBCore.Shared.Weapons[weapon]["name"] == "weapon_molotov" then
+                            -- elseif sharedWeapons[weapon]["name"] == "weapon_molotov" then
                                 -- TriggerServerEvent('QBCore:Server:RemoveItem', "weapon_molotov", 1)
-                            -- elseif QBCore.Shared.Weapons[weapon]["name"] == "weapon_stickybomb" then
+                            -- elseif sharedWeapons[weapon]["name"] == "weapon_stickybomb" then
                                 -- TriggerServerEvent('QBCore:Server:RemoveItem', "weapon_stickybomb", 1)
-                            -- elseif QBCore.Shared.Weapons[weapon]["name"] == "weapon_grenade" then
+                            -- elseif sharedWeapons[weapon]["name"] == "weapon_grenade" then
                                 -- TriggerServerEvent('QBCore:Server:RemoveItem', "weapon_grenade", 1)
-                            -- elseif QBCore.Shared.Weapons[weapon]["name"] == "weapon_bzgas" then
+                            -- elseif sharedWeapons[weapon]["name"] == "weapon_bzgas" then
                                 -- TriggerServerEvent('QBCore:Server:RemoveItem', "weapon_bzgas", 1)
-                            -- elseif QBCore.Shared.Weapons[weapon]["name"] == "weapon_proxmine" then
+                            -- elseif sharedWeapons[weapon]["name"] == "weapon_proxmine" then
                                 -- TriggerServerEvent('QBCore:Server:RemoveItem', "weapon_proxmine", 1)
-                            -- elseif QBCore.Shared.Weapons[weapon]["name"] == "weapon_ball" then
+                            -- elseif sharedWeapons[weapon]["name"] == "weapon_ball" then
                                 -- TriggerServerEvent('QBCore:Server:RemoveItem', "weapon_ball", 1)
-                            -- elseif QBCore.Shared.Weapons[weapon]["name"] == "weapon_smokegrenade" then
+                            -- elseif sharedWeapons[weapon]["name"] == "weapon_smokegrenade" then
                                 -- TriggerServerEvent('QBCore:Server:RemoveItem', "weapon_smokegrenade", 1)
-                            -- elseif QBCore.Shared.Weapons[weapon]["name"] == "weapon_flare" then
+                            -- elseif sharedWeapons[weapon]["name"] == "weapon_flare" then
                                 -- TriggerServerEvent('QBCore:Server:RemoveItem', "weapon_flare", 1)
                             else
                                 if ammo > 0 then
@@ -201,7 +202,7 @@ CreateThread(function()
                         end
                     else
                         if weapon ~= -1569615261 then
-                            TriggerEvent('inventory:client:CheckWeapon', QBCore.Shared.Weapons[weapon]["name"])
+                            TriggerEvent('inventory:client:CheckWeapon', sharedWeapons[weapon]["name"])
                             exports['qbr-core']:Notify(Lang:t('error.weapon_broken'), "error")
                             MultiplierAmount = 0
                         end
@@ -237,8 +238,8 @@ CreateThread(function()
                         else
                             if CurrentWeaponData and next(CurrentWeaponData) then
                                 if not data.RepairingData.Ready then
-                                    local WeaponData = QBCore.Shared.Weapons[GetHashKey(CurrentWeaponData.name)]
-                                    local WeaponClass = (QBCore.Shared.SplitStr(WeaponData.ammotype, "_")[2]):lower()
+                                    local WeaponData = sharedWeapons[GetHashKey(CurrentWeaponData.name)]
+                                    local WeaponClass = (exports['qbr-core']:SplitStr(WeaponData.ammotype, "_")[2]):lower()
                                     DrawText3Ds(data.coords.x, data.coords.y, data.coords.z, Lang:t('info.repair_weapon_price', { value = Config.WeaponRepairCosts[WeaponClass] }))
                                     if IsControlJustReleased(0, 0xCEFD9220) then
                                         exports['qbr-core']:TriggerCallback('weapons:server:RepairWeapon', function(HasMoney)

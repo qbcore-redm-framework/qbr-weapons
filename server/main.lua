@@ -1,5 +1,5 @@
-
-
+local sharedItems = exports['qbr-core']:GetItems()
+local sharedWeapons = exports['qbr-core']:GetWeapons()
 -- Functions
 
 local function IsWeaponBlocked(WeaponName)
@@ -65,8 +65,8 @@ exports['qbr-core']:CreateCallback('weapons:server:RemoveAttachment', function(s
                 table.remove(Inventory[ItemData.slot].info.attachments, key)
                 Player.Functions.SetInventory(Player.PlayerData.items, true)
                 Player.Functions.AddItem(AttachmentComponent.item, 1)
-                TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[AttachmentComponent.item], "add")
-                TriggerClientEvent("QBCore:Notify", src, Lang:t('info.removed_attachment', { value = QBCore.Shared.Items[AttachmentComponent.item].label }), "error")
+                TriggerClientEvent('inventory:client:ItemBox', src, sharedItems[AttachmentComponent.item], "add")
+                TriggerClientEvent("QBCore:Notify", src, Lang:t('info.removed_attachment', { value = sharedItems[AttachmentComponent.item].label }), "error")
                 cb(Inventory[ItemData.slot].info.attachments)
             else
                 cb(false)
@@ -84,8 +84,8 @@ exports['qbr-core']:CreateCallback("weapons:server:RepairWeapon", function(sourc
     local Player = exports['qbr-core']:GetPlayer(src)
     local minute = 60 * 1000
     local Timeout = math.random(5 * minute, 10 * minute)
-    local WeaponData = QBCore.Shared.Weapons[GetHashKey(data.name)]
-    local WeaponClass = (QBCore.Shared.SplitStr(WeaponData.ammotype, "_")[2]):lower()
+    local WeaponData = sharedWeapons[GetHashKey(data.name)]
+    local WeaponClass = (exports['qbr-core']:SplitStr(WeaponData.ammotype, "_")[2]):lower()
 
     if Player.PlayerData.items[data.slot] then
         if Player.PlayerData.items[data.slot].info.quality then
@@ -98,7 +98,7 @@ exports['qbr-core']:CreateCallback("weapons:server:RepairWeapon", function(sourc
                         Ready = false,
                     }
                     Player.Functions.RemoveItem(data.name, 1, data.slot)
-                    TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[data.name], "remove")
+                    TriggerClientEvent('inventory:client:ItemBox', src, sharedItems[data.name], "remove")
                     TriggerClientEvent("inventory:client:CheckWeapon", src, data.name)
                     TriggerClientEvent('weapons:client:SyncRepairShops', -1, Config.WeaponRepairPoints[RepairPoint], RepairPoint)
 
@@ -170,7 +170,7 @@ RegisterNetEvent("weapons:server:TakeBackWeapon", function(k, data)
     local itemdata = Config.WeaponRepairPoints[k].RepairingData.WeaponData
     itemdata.info.quality = 100
     Player.Functions.AddItem(itemdata.name, 1, false, itemdata.info)
-    TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[itemdata.name], "add")
+    TriggerClientEvent('inventory:client:ItemBox', src, sharedItems[itemdata.name], "add")
     Config.WeaponRepairPoints[k].IsRepairing = false
     Config.WeaponRepairPoints[k].RepairingData = {}
     TriggerClientEvent('weapons:client:SyncRepairShops', -1, Config.WeaponRepairPoints[k], k)
@@ -187,7 +187,7 @@ end)
 RegisterNetEvent('weapons:server:UpdateWeaponQuality', function(data, RepeatAmount)
     local src = source
     local Player = exports['qbr-core']:GetPlayer(src)
-    local WeaponData = QBCore.Shared.Weapons[GetHashKey(data.name)]
+    local WeaponData = sharedWeapons[GetHashKey(data.name)]
     local WeaponSlot = Player.PlayerData.items[data.slot]
     local DecreaseAmount = Config.DurabilityMultiplier[data.name]
     if WeaponSlot then
@@ -236,13 +236,13 @@ RegisterNetEvent("weapons:server:EquipAttachment", function(ItemData, CurrentWea
                         if v.type and v.type == currenttype then
                             GiveBackItem = tostring(v.item):lower()
                             table.remove(Inventory[CurrentWeaponData.slot].info.attachments, key)
-                            TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[GiveBackItem], "add")
+                            TriggerClientEvent('inventory:client:ItemBox', src, sharedItems[GiveBackItem], "add")
                         end
                     end
                 end
                 Inventory[CurrentWeaponData.slot].info.attachments[#Inventory[CurrentWeaponData.slot].info.attachments+1] = {
                     component = AttachmentData.component,
-                    label = QBCore.Shared.Items[AttachmentData.item].label,
+                    label = sharedItems[AttachmentData.item].label,
                     item = AttachmentData.item,
                     type = AttachmentData.type,
                 }
@@ -253,13 +253,13 @@ RegisterNetEvent("weapons:server:EquipAttachment", function(ItemData, CurrentWea
                     TriggerClientEvent('inventory:client:ItemBox', src, ItemData, "remove")
                 end)
             else
-                TriggerClientEvent("QBCore:Notify", src, Lang:t('error.attachment_already_on_weapon' , { value = QBCore.Shared.Items[AttachmentData.item].label }), "error", 3500)
+                TriggerClientEvent("QBCore:Notify", src, Lang:t('error.attachment_already_on_weapon' , { value = sharedItems[AttachmentData.item].label }), "error", 3500)
             end
         else
             Inventory[CurrentWeaponData.slot].info.attachments = {}
             Inventory[CurrentWeaponData.slot].info.attachments[#Inventory[CurrentWeaponData.slot].info.attachments+1] = {
                 component = AttachmentData.component,
-                label = QBCore.Shared.Items[AttachmentData.item].label,
+                label = sharedItems[AttachmentData.item].label,
                 item = AttachmentData.item,
                 type = AttachmentData.type,
             }
@@ -279,7 +279,7 @@ end)
 
 -- Commands
 
-QBCore.Commands.Add("repairweapon", "Repair Weapon (God Only)", {{name="hp", help=Lang:t('info.hp_of_weapon')}}, true, function(source, args)
+exports['qbr-core']:AddCommand("repairweapon", "Repair Weapon (God Only)", {{name="hp", help=Lang:t('info.hp_of_weapon')}}, true, function(source, args)
     TriggerClientEvent('weapons:client:SetWeaponQuality', source, tonumber(args[1]))
 end, "god")
 
