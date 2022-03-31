@@ -1,5 +1,5 @@
 -- Variables
-local QBCore = exports['qbr-core']:GetCoreObject()
+
 local PlayerData, CurrentWeaponData, CanShoot, MultiplierAmount = {}, {}, true, 0
 local allowList = {
     `weapon_lasso`,
@@ -18,8 +18,8 @@ local allowList = {
 -- Handlers
 
 AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
-    PlayerData = QBCore.Functions.GetPlayerData()
-    QBCore.Functions.TriggerCallback("weapons:server:GetConfig", function(RepairPoints)
+    PlayerData = exports['qbr-core']:GetPlayerData()
+    exports['qbr-core']:TriggerCallback("weapons:server:GetConfig", function(RepairPoints)
         for k, data in pairs(RepairPoints) do
             Config.WeaponRepairPoints[k].IsRepairing = data.IsRepairing
             Config.WeaponRepairPoints[k].RepairingData = data.RepairingData
@@ -89,7 +89,7 @@ RegisterNetEvent('weapon:client:AddAmmo', function(type, amount, itemData)
             local total = Citizen.InvokeNative(0x015A522136D7F951, PlayerPedId(), weapon, Citizen.ResultAsInteger())
             local maxAmmo = Citizen.InvokeNative(0xDC16122C7A20C933, PlayerPedId(), weapon, Citizen.ResultAsInteger())
             if total < maxAmmo then
-                QBCore.Functions.Progressbar("taking_bullets", Lang:t('info.loading_bullets'), math.random(4000, 6000), false, true, {
+                exports['qbr-core']:Progressbar("taking_bullets", Lang:t('info.loading_bullets'), math.random(4000, 6000), false, true, {
                     disableMovement = false,
                     disableCarMovement = false,
                     disableMouse = false,
@@ -104,16 +104,16 @@ RegisterNetEvent('weapon:client:AddAmmo', function(type, amount, itemData)
                         TriggerEvent('QBCore:Notify', Lang:t('success.reloaded'), "success")
                     end
                 end, function()
-                    QBCore.Functions.Notify(Lang:t('error.canceled'), "error")
+                    exports['qbr-core']:Notify(Lang:t('error.canceled'), "error")
                 end)
             else
-                QBCore.Functions.Notify(Lang:t('error.max_ammo'), "error")
+                exports['qbr-core']:Notify(Lang:t('error.max_ammo'), "error")
             end
         else
-            QBCore.Functions.Notify(Lang:t('error.no_weapon'), "error")
+            exports['qbr-core']:Notify(Lang:t('error.no_weapon'), "error")
         end
     else
-        QBCore.Functions.Notify(Lang:t('error.no_weapon'), "error")
+        exports['qbr-core']:Notify(Lang:t('error.no_weapon'), "error")
     end
 end)
 
@@ -127,11 +127,11 @@ RegisterNetEvent("weapons:client:EquipAttachment", function(ItemData, attachment
             if WeaponAttachments[WeaponData.name][attachment]['item'] == ItemData.name then
                 TriggerServerEvent("weapons:server:EquipAttachment", ItemData, CurrentWeaponData, WeaponAttachments[WeaponData.name][attachment])
             else
-                QBCore.Functions.Notify(Lang:t('error.no_support_attachment'), "error")
+                exports['qbr-core']:Notify(Lang:t('error.no_support_attachment'), "error")
             end
         end
     else
-        QBCore.Functions.Notify(Lang:t('error.no_weapon_in_hand'), "error")
+        exports['qbr-core']:Notify(Lang:t('error.no_weapon_in_hand'), "error")
     end
 end)
 
@@ -202,7 +202,7 @@ CreateThread(function()
                     else
                         if weapon ~= -1569615261 then
                             TriggerEvent('inventory:client:CheckWeapon', QBCore.Shared.Weapons[weapon]["name"])
-                            QBCore.Functions.Notify(Lang:t('error.weapon_broken'), "error")
+                            exports['qbr-core']:Notify(Lang:t('error.weapon_broken'), "error")
                             MultiplierAmount = 0
                         end
                     end
@@ -241,7 +241,7 @@ CreateThread(function()
                                     local WeaponClass = (QBCore.Shared.SplitStr(WeaponData.ammotype, "_")[2]):lower()
                                     DrawText3Ds(data.coords.x, data.coords.y, data.coords.z, Lang:t('info.repair_weapon_price', { value = Config.WeaponRepairCosts[WeaponClass] }))
                                     if IsControlJustReleased(0, 0xCEFD9220) then
-                                        QBCore.Functions.TriggerCallback('weapons:server:RepairWeapon', function(HasMoney)
+                                        exports['qbr-core']:TriggerCallback('weapons:server:RepairWeapon', function(HasMoney)
                                             if HasMoney then
                                                 CurrentWeaponData = {}
                                             end

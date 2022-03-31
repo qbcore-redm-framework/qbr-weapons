@@ -1,4 +1,4 @@
-local QBCore = exports['qbr-core']:GetCoreObject()
+
 
 -- Functions
 
@@ -8,7 +8,7 @@ local function IsWeaponBlocked(WeaponName)
         if name == WeaponName then
             retval = true
             break
-        end 
+        end
     end
     return retval
 end
@@ -35,12 +35,12 @@ end
 
 -- Callback
 
-QBCore.Functions.CreateCallback("weapons:server:GetConfig", function(source, cb)
+exports['qbr-core']:CreateCallback("weapons:server:GetConfig", function(source, cb)
     cb(Config.WeaponRepairPoints)
 end)
 
-QBCore.Functions.CreateCallback("weapon:server:GetWeaponAmmo", function(source, cb, WeaponData)
-    local Player = QBCore.Functions.GetPlayer(source)
+exports['qbr-core']:CreateCallback("weapon:server:GetWeaponAmmo", function(source, cb, WeaponData)
+    local Player = exports['qbr-core']:GetPlayer(source)
     local retval = 0
     if WeaponData then
         if Player then
@@ -53,9 +53,9 @@ QBCore.Functions.CreateCallback("weapon:server:GetWeaponAmmo", function(source, 
     cb(retval)
 end)
 
-QBCore.Functions.CreateCallback('weapons:server:RemoveAttachment', function(source, cb, AttachmentData, ItemData)
+exports['qbr-core']:CreateCallback('weapons:server:RemoveAttachment', function(source, cb, AttachmentData, ItemData)
     local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
+    local Player = exports['qbr-core']:GetPlayer(src)
     local Inventory = Player.PlayerData.items
     local AttachmentComponent = WeaponAttachments[ItemData.name:upper()][AttachmentData.attachment]
     if Inventory[ItemData.slot] then
@@ -79,9 +79,9 @@ QBCore.Functions.CreateCallback('weapons:server:RemoveAttachment', function(sour
     end
 end)
 
-QBCore.Functions.CreateCallback("weapons:server:RepairWeapon", function(source, cb, RepairPoint, data)
+exports['qbr-core']:CreateCallback("weapons:server:RepairWeapon", function(source, cb, RepairPoint, data)
     local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
+    local Player = exports['qbr-core']:GetPlayer(src)
     local minute = 60 * 1000
     local Timeout = math.random(5 * minute, 10 * minute)
     local WeaponData = QBCore.Shared.Weapons[GetHashKey(data.name)]
@@ -142,7 +142,7 @@ end)
 
 RegisterNetEvent("weapons:server:AddWeaponAmmo", function(CurrentWeaponData, amount)
     local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
+    local Player = exports['qbr-core']:GetPlayer(src)
     local amount = tonumber(amount)
     if CurrentWeaponData then
         if Player.PlayerData.items[CurrentWeaponData.slot] then
@@ -154,7 +154,7 @@ end)
 
 RegisterNetEvent("weapons:server:UpdateWeaponAmmo", function(CurrentWeaponData, amount)
     local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
+    local Player = exports['qbr-core']:GetPlayer(src)
     local amount = tonumber(amount)
     if CurrentWeaponData then
         if Player.PlayerData.items[CurrentWeaponData.slot] then
@@ -166,7 +166,7 @@ end)
 
 RegisterNetEvent("weapons:server:TakeBackWeapon", function(k, data)
     local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
+    local Player = exports['qbr-core']:GetPlayer(src)
     local itemdata = Config.WeaponRepairPoints[k].RepairingData.WeaponData
     itemdata.info.quality = 100
     Player.Functions.AddItem(itemdata.name, 1, false, itemdata.info)
@@ -178,7 +178,7 @@ end)
 
 RegisterNetEvent("weapons:server:SetWeaponQuality", function(data, hp)
     local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
+    local Player = exports['qbr-core']:GetPlayer(src)
     local WeaponSlot = Player.PlayerData.items[data.slot]
     WeaponSlot.info.quality = hp
     Player.Functions.SetInventory(Player.PlayerData.items, true)
@@ -186,7 +186,7 @@ end)
 
 RegisterNetEvent('weapons:server:UpdateWeaponQuality', function(data, RepeatAmount)
     local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
+    local Player = exports['qbr-core']:GetPlayer(src)
     local WeaponData = QBCore.Shared.Weapons[GetHashKey(data.name)]
     local WeaponSlot = Player.PlayerData.items[data.slot]
     local DecreaseAmount = Config.DurabilityMultiplier[data.name]
@@ -223,7 +223,7 @@ end)
 
 RegisterNetEvent("weapons:server:EquipAttachment", function(ItemData, CurrentWeaponData, AttachmentData)
     local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
+    local Player = exports['qbr-core']:GetPlayer(src)
     local Inventory = Player.PlayerData.items
     local GiveBackItem = nil
     if Inventory[CurrentWeaponData.slot] then
@@ -286,492 +286,492 @@ end, "god")
 -- Items
 
 -- AMMO
-QBCore.Functions.CreateUseableItem('pistol_ammo', function(source, item)
+exports['qbr-core']:CreateUseableItem('pistol_ammo', function(source, item)
     TriggerClientEvent('weapon:client:AddAmmo', source, 'AMMO_PISTOL', 12, item)
 end)
 
-QBCore.Functions.CreateUseableItem('rifle_ammo', function(source, item)
+exports['qbr-core']:CreateUseableItem('rifle_ammo', function(source, item)
     TriggerClientEvent('weapon:client:AddAmmo', source, 'AMMO_RIFLE', 30, item)
 end)
 
-QBCore.Functions.CreateUseableItem('smg_ammo', function(source, item)
+exports['qbr-core']:CreateUseableItem('smg_ammo', function(source, item)
     TriggerClientEvent('weapon:client:AddAmmo', source, 'AMMO_SMG', 20, item)
 end)
 
-QBCore.Functions.CreateUseableItem('shotgun_ammo', function(source, item)
+exports['qbr-core']:CreateUseableItem('shotgun_ammo', function(source, item)
     TriggerClientEvent('weapon:client:AddAmmo', source, 'AMMO_SHOTGUN', 10, item)
 end)
 
-QBCore.Functions.CreateUseableItem('mg_ammo', function(source, item)
+exports['qbr-core']:CreateUseableItem('mg_ammo', function(source, item)
     TriggerClientEvent('weapon:client:AddAmmo', source, 'AMMO_MG', 30, item)
 end)
 
-QBCore.Functions.CreateUseableItem('snp_ammo', function(source, item)
+exports['qbr-core']:CreateUseableItem('snp_ammo', function(source, item)
     TriggerClientEvent('weapon:client:AddAmmo', source, 'AMMO_SNIPER', 10, item)
 end)
 
-QBCore.Functions.CreateUseableItem('emp_ammo', function(source, item)
+exports['qbr-core']:CreateUseableItem('emp_ammo', function(source, item)
     TriggerClientEvent('weapon:client:AddAmmo', source, 'AMMO_EMPLAUNCHER', 10, item)
 end)
 
-QBCore.Functions.CreateUseableItem("repeater_ammo", function(source, item) 
+exports['qbr-core']:CreateUseableItem("repeater_ammo", function(source, item)
     TriggerClientEvent('weapon:client:AddAmmo', source, 'AMMO_REPEATER', 12, item)
 end)
 
-QBCore.Functions.CreateUseableItem("revolver_ammo", function(source, item) 
+exports['qbr-core']:CreateUseableItem("revolver_ammo", function(source, item)
     TriggerClientEvent('weapon:client:AddAmmo', source, 'AMMO_REVOLVER', 12, item)
 end)
 
 -- TINTS
-QBCore.Functions.CreateUseableItem('weapontint_black', function(source)
+exports['qbr-core']:CreateUseableItem('weapontint_black', function(source)
     TriggerClientEvent('weapons:client:EquipTint', source, 0)
 end)
 
-QBCore.Functions.CreateUseableItem('weapontint_green', function(source)
+exports['qbr-core']:CreateUseableItem('weapontint_green', function(source)
     TriggerClientEvent('weapons:client:EquipTint', source, 1)
 end)
 
-QBCore.Functions.CreateUseableItem('weapontint_gold', function(source)
+exports['qbr-core']:CreateUseableItem('weapontint_gold', function(source)
     TriggerClientEvent('weapons:client:EquipTint', source, 2)
 end)
 
-QBCore.Functions.CreateUseableItem('weapontint_pink', function(source)
+exports['qbr-core']:CreateUseableItem('weapontint_pink', function(source)
     TriggerClientEvent('weapons:client:EquipTint', source, 3)
 end)
 
-QBCore.Functions.CreateUseableItem('weapontint_army', function(source)
+exports['qbr-core']:CreateUseableItem('weapontint_army', function(source)
     TriggerClientEvent('weapons:client:EquipTint', source, 4)
 end)
 
-QBCore.Functions.CreateUseableItem('weapontint_lspd', function(source)
+exports['qbr-core']:CreateUseableItem('weapontint_lspd', function(source)
     TriggerClientEvent('weapons:client:EquipTint', source, 5)
 end)
 
-QBCore.Functions.CreateUseableItem('weapontint_orange', function(source)
+exports['qbr-core']:CreateUseableItem('weapontint_orange', function(source)
     TriggerClientEvent('weapons:client:EquipTint', source, 6)
 end)
 
-QBCore.Functions.CreateUseableItem('weapontint_plat', function(source)
+exports['qbr-core']:CreateUseableItem('weapontint_plat', function(source)
     TriggerClientEvent('weapons:client:EquipTint', source, 7)
 end)
 
 -- ATTACHMENTS
-QBCore.Functions.CreateUseableItem('pistol_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('pistol_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('pistol_extendedclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('pistol_extendedclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'extendedclip')
 end)
 
-QBCore.Functions.CreateUseableItem('pistol_flashlight', function(source, item)
+exports['qbr-core']:CreateUseableItem('pistol_flashlight', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'flashlight')
 end)
 
-QBCore.Functions.CreateUseableItem('pistol_suppressor', function(source, item)
+exports['qbr-core']:CreateUseableItem('pistol_suppressor', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'suppressor')
 end)
 
-QBCore.Functions.CreateUseableItem('pistol_luxuryfinish', function(source, item)
+exports['qbr-core']:CreateUseableItem('pistol_luxuryfinish', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'luxuryfinish')
 end)
 
-QBCore.Functions.CreateUseableItem('combatpistol_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('combatpistol_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('combatpistol_extendedclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('combatpistol_extendedclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'extendedclip')
 end)
 
-QBCore.Functions.CreateUseableItem('combatpistol_luxuryfinish', function(source, item)
+exports['qbr-core']:CreateUseableItem('combatpistol_luxuryfinish', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'luxuryfinish')
 end)
 
-QBCore.Functions.CreateUseableItem('appistol_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('appistol_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('appistol_extendedclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('appistol_extendedclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'extendedclip')
 end)
 
-QBCore.Functions.CreateUseableItem('appistol_luxuryfinish', function(source, item)
+exports['qbr-core']:CreateUseableItem('appistol_luxuryfinish', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'luxuryfinish')
 end)
 
-QBCore.Functions.CreateUseableItem('pistol50_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('pistol50_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('pistol50_extendedclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('pistol50_extendedclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'extendedclip')
 end)
 
-QBCore.Functions.CreateUseableItem('pistol50_luxuryfinish', function(source, item)
+exports['qbr-core']:CreateUseableItem('pistol50_luxuryfinish', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'luxuryfinish')
 end)
 
-QBCore.Functions.CreateUseableItem('heavypistol_luxuryfinish', function(source, item)
+exports['qbr-core']:CreateUseableItem('heavypistol_luxuryfinish', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'luxuryfinish')
 end)
 
-QBCore.Functions.CreateUseableItem('revolver_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('revolver_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('doubleaction_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('doubleaction_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('revolver_vipvariant', function(source, item)
+exports['qbr-core']:CreateUseableItem('revolver_vipvariant', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'vipvariant')
 end)
 
-QBCore.Functions.CreateUseableItem('revolver_bodyguardvariant', function(source, item)
+exports['qbr-core']:CreateUseableItem('revolver_bodyguardvariant', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'bodyguardvariant')
 end)
 
-QBCore.Functions.CreateUseableItem('snspistol_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('snspistol_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('snspistol_extendedclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('snspistol_extendedclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'extendedclip')
 end)
 
-QBCore.Functions.CreateUseableItem('snspistol_grip', function(source, item)
+exports['qbr-core']:CreateUseableItem('snspistol_grip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'grip')
 end)
 
-QBCore.Functions.CreateUseableItem('heavypistol_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('heavypistol_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('heavypistol_extendedclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('heavypistol_extendedclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'extendedclip')
 end)
 
-QBCore.Functions.CreateUseableItem('heavypistol_grip', function(source, item)
+exports['qbr-core']:CreateUseableItem('heavypistol_grip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'grip')
 end)
 
-QBCore.Functions.CreateUseableItem('vintagepistol_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('vintagepistol_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('vintagepistol_extendedclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('vintagepistol_extendedclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'extendedclip')
 end)
 
-QBCore.Functions.CreateUseableItem('combatpistol_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('combatpistol_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('microsmg_extendedclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('microsmg_extendedclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'extendedclip')
 end)
 
-QBCore.Functions.CreateUseableItem('microsmg_scope', function(source, item)
+exports['qbr-core']:CreateUseableItem('microsmg_scope', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'scope')
 end)
 
-QBCore.Functions.CreateUseableItem('microsmg_luxuryfinish', function(source, item)
+exports['qbr-core']:CreateUseableItem('microsmg_luxuryfinish', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'luxuryfinish')
 end)
 
-QBCore.Functions.CreateUseableItem('smg_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('smg_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('smg_extendedclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('smg_extendedclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'extendedclip')
 end)
 
-QBCore.Functions.CreateUseableItem('smg_drum', function(source, item)
+exports['qbr-core']:CreateUseableItem('smg_drum', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'drum')
 end)
 
-QBCore.Functions.CreateUseableItem('smg_scope', function(source, item)
+exports['qbr-core']:CreateUseableItem('smg_scope', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'scope')
 end)
 
-QBCore.Functions.CreateUseableItem('smg_luxuryfinish', function(source, item)
+exports['qbr-core']:CreateUseableItem('smg_luxuryfinish', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'luxuryfinish')
 end)
 
-QBCore.Functions.CreateUseableItem('assaultsmg_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('assaultsmg_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('assaultsmg_extendedclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('assaultsmg_extendedclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'extendedclip')
 end)
 
-QBCore.Functions.CreateUseableItem('pumpshotgun_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('pumpshotgun_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('sawnoffshotgun_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('sawnoffshotgun_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('assaultsmg_luxuryfinish', function(source, item)
+exports['qbr-core']:CreateUseableItem('assaultsmg_luxuryfinish', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'luxuryfinish')
 end)
 
-QBCore.Functions.CreateUseableItem('minismg_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('minismg_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('minismg_extendedclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('minismg_extendedclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'extendedclip')
 end)
 
-QBCore.Functions.CreateUseableItem('machinepistol_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('machinepistol_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('machinepistol_extendedclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('machinepistol_extendedclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'extendedclip')
 end)
 
-QBCore.Functions.CreateUseableItem('machinepistol_drum', function(source, item)
+exports['qbr-core']:CreateUseableItem('machinepistol_drum', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'drum')
 end)
 
-QBCore.Functions.CreateUseableItem('combatpdw_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('combatpdw_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('combatpdw_extendedclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('combatpdw_extendedclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'extendedclip')
 end)
 
-QBCore.Functions.CreateUseableItem('combatpistol_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('combatpistol_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('emplauncher_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('emplauncher_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('combatpdw_drum', function(source, item)
+exports['qbr-core']:CreateUseableItem('combatpdw_drum', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'drum')
 end)
 
-QBCore.Functions.CreateUseableItem('combatpdw_grip', function(source, item)
+exports['qbr-core']:CreateUseableItem('combatpdw_grip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'grip')
 end)
 
-QBCore.Functions.CreateUseableItem('combatpdw_scope', function(source, item)
+exports['qbr-core']:CreateUseableItem('combatpdw_scope', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'scope')
 end)
 
-QBCore.Functions.CreateUseableItem('shotgun_suppressor', function(source, item)
+exports['qbr-core']:CreateUseableItem('shotgun_suppressor', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'suppressor')
 end)
 
-QBCore.Functions.CreateUseableItem('pumpshotgun_luxuryfinish', function(source, item)
+exports['qbr-core']:CreateUseableItem('pumpshotgun_luxuryfinish', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'luxuryfinish')
 end)
 
-QBCore.Functions.CreateUseableItem('sawnoffshotgun_luxuryfinish', function(source, item)
+exports['qbr-core']:CreateUseableItem('sawnoffshotgun_luxuryfinish', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'luxuryfinish')
 end)
 
-QBCore.Functions.CreateUseableItem('sniper_luxuryfinish', function(source, item)
+exports['qbr-core']:CreateUseableItem('sniper_luxuryfinish', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'luxuryfinish')
 end)
 
-QBCore.Functions.CreateUseableItem('assaultshotgun_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('assaultshotgun_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('assaultshotgun_extendedclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('assaultshotgun_extendedclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'extendedclip')
 end)
 
-QBCore.Functions.CreateUseableItem('heavyshotgun_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('heavyshotgun_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('heavyshotgun_extendedclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('heavyshotgun_extendedclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'extendedclip')
 end)
 
-QBCore.Functions.CreateUseableItem('heavyshotgun_drum', function(source, item)
+exports['qbr-core']:CreateUseableItem('heavyshotgun_drum', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'drum')
 end)
 
-QBCore.Functions.CreateUseableItem('assaultrifle_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('assaultrifle_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('assaultrifle_extendedclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('assaultrifle_extendedclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'extendedclip')
 end)
 
-QBCore.Functions.CreateUseableItem('assaultrifle_drum', function(source, item)
+exports['qbr-core']:CreateUseableItem('assaultrifle_drum', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'drum')
 end)
 
-QBCore.Functions.CreateUseableItem('rifle_flashlight', function(source, item)
+exports['qbr-core']:CreateUseableItem('rifle_flashlight', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'flashlight')
 end)
 
-QBCore.Functions.CreateUseableItem('rifle_grip', function(source, item)
+exports['qbr-core']:CreateUseableItem('rifle_grip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'grip')
 end)
 
-QBCore.Functions.CreateUseableItem('rifle_suppressor', function(source, item)
+exports['qbr-core']:CreateUseableItem('rifle_suppressor', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'suppressor')
 end)
 
-QBCore.Functions.CreateUseableItem('sniperrifle_suppressor', function(source, item)
+exports['qbr-core']:CreateUseableItem('sniperrifle_suppressor', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'suppressor')
 end)
 
-QBCore.Functions.CreateUseableItem('assaultrifle_luxuryfinish', function(source, item)
+exports['qbr-core']:CreateUseableItem('assaultrifle_luxuryfinish', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'luxuryfinish')
 end)
 
-QBCore.Functions.CreateUseableItem('carbinerifle_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('carbinerifle_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('carbinerifle_extendedclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('carbinerifle_extendedclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'extendedclip')
 end)
 
-QBCore.Functions.CreateUseableItem('carbinerifle_drum', function(source, item)
+exports['qbr-core']:CreateUseableItem('carbinerifle_drum', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'drum')
 end)
 
-QBCore.Functions.CreateUseableItem('combatpdw_grip', function(source, item)
+exports['qbr-core']:CreateUseableItem('combatpdw_grip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'grip')
 end)
 
-QBCore.Functions.CreateUseableItem('carbinerifle_scope', function(source, item)
+exports['qbr-core']:CreateUseableItem('carbinerifle_scope', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'scope')
 end)
 
-QBCore.Functions.CreateUseableItem('carbinerifle_luxuryfinish', function(source, item)
+exports['qbr-core']:CreateUseableItem('carbinerifle_luxuryfinish', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'luxuryfinish')
 end)
 
-QBCore.Functions.CreateUseableItem('advancedrifle_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('advancedrifle_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('advancedrifle_extendedclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('advancedrifle_extendedclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'extendedclip')
 end)
 
-QBCore.Functions.CreateUseableItem('advancedrifle_luxuryfinish', function(source, item)
+exports['qbr-core']:CreateUseableItem('advancedrifle_luxuryfinish', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'luxuryfinish')
 end)
 
-QBCore.Functions.CreateUseableItem('specialcarbine_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('specialcarbine_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('specialcarbine_extendedclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('specialcarbine_extendedclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'extendedclip')
 end)
 
-QBCore.Functions.CreateUseableItem('bullpupshotgun_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('bullpupshotgun_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('specialcarbine_drum', function(source, item)
+exports['qbr-core']:CreateUseableItem('specialcarbine_drum', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'drum')
 end)
 
-QBCore.Functions.CreateUseableItem('specialcarbine_luxuryfinish', function(source, item)
+exports['qbr-core']:CreateUseableItem('specialcarbine_luxuryfinish', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'luxuryfinish')
 end)
 
-QBCore.Functions.CreateUseableItem('bullpuprifle_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('bullpuprifle_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('bullpuprifle_extendedclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('bullpuprifle_extendedclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'extendedclip')
 end)
 
-QBCore.Functions.CreateUseableItem('bullpuprifle_luxuryfinish', function(source, item)
+exports['qbr-core']:CreateUseableItem('bullpuprifle_luxuryfinish', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'luxuryfinish')
 end)
 
-QBCore.Functions.CreateUseableItem('compactrifle_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('compactrifle_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('compactrifle_extendedclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('compactrifle_extendedclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'extendedclip')
 end)
 
-QBCore.Functions.CreateUseableItem('compactrifle_drum', function(source, item)
+exports['qbr-core']:CreateUseableItem('compactrifle_drum', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'drum')
 end)
 
-QBCore.Functions.CreateUseableItem('gusenberg_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('gusenberg_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('gusenberg_extendedclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('gusenberg_extendedclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'extendedclip')
 end)
 
-QBCore.Functions.CreateUseableItem('microsmg_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('microsmg_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('microsmg_extendedclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('microsmg_extendedclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'extendedclip')
 end)
 
-QBCore.Functions.CreateUseableItem('sniperrifle_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('sniperrifle_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('sniper_scope', function(source, item)
+exports['qbr-core']:CreateUseableItem('sniper_scope', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'scope')
 end)
 
-QBCore.Functions.CreateUseableItem('snipermax_scope', function(source, item)
+exports['qbr-core']:CreateUseableItem('snipermax_scope', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'scope')
 end)
 
-QBCore.Functions.CreateUseableItem('sniper_grip', function(source, item)
+exports['qbr-core']:CreateUseableItem('sniper_grip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'grip')
 end)
 
-QBCore.Functions.CreateUseableItem('heavysniper_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('heavysniper_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('heavysniper_extendedclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('heavysniper_extendedclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'extendedclip')
 end)
 
-QBCore.Functions.CreateUseableItem('marksmanrifle_defaultclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('marksmanrifle_defaultclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'defaultclip')
 end)
 
-QBCore.Functions.CreateUseableItem('marksmanrifle_extendedclip', function(source, item)
+exports['qbr-core']:CreateUseableItem('marksmanrifle_extendedclip', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'extendedclip')
 end)
 
-QBCore.Functions.CreateUseableItem('marksmanrifle_scope', function(source, item)
+exports['qbr-core']:CreateUseableItem('marksmanrifle_scope', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'scope')
 end)
 
-QBCore.Functions.CreateUseableItem('marksmanrifle_luxuryfinish', function(source, item)
+exports['qbr-core']:CreateUseableItem('marksmanrifle_luxuryfinish', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'luxuryfinish')
 end)
 
-QBCore.Functions.CreateUseableItem('snspistol_luxuryfinish', function(source, item)
+exports['qbr-core']:CreateUseableItem('snspistol_luxuryfinish', function(source, item)
     TriggerClientEvent('weapons:client:EquipAttachment', source, item, 'luxuryfinish')
 end)
