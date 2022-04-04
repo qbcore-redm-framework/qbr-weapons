@@ -102,19 +102,19 @@ RegisterNetEvent('weapon:client:AddAmmo', function(type, amount, itemData)
                         TriggerServerEvent("weapons:server:AddWeaponAmmo", CurrentWeaponData, total + amount)
                         TriggerServerEvent('QBCore:Server:RemoveItem', itemData.name, 1, itemData.slot)
                         TriggerEvent('inventory:client:ItemBox', sharedItems[itemData.name], "remove")
-                        TriggerEvent('QBCore:Notify', Lang:t('success.reloaded'), "success")
+                        TriggerEvent('QBCore:Notify', Lang:t('success.reloaded'), 2000, 0, 'hud_textures', 'check')
                     end
                 end, function()
-                    exports['qbr-core']:Notify(Lang:t('error.canceled'), "error")
+                    exports['qbr-core']:Notify(9, Lang:t('error.canceled'), 2000, 0, 'mp_lobby_textures', 'cross')
                 end)
             else
-                exports['qbr-core']:Notify(Lang:t('error.max_ammo'), "error")
+                exports['qbr-core']:Notify(9, Lang:t('error.max_ammo'), 2000, 0, 'mp_lobby_textures', 'cross')
             end
         else
-            exports['qbr-core']:Notify(Lang:t('error.no_weapon'), "error")
+            exports['qbr-core']:Notify(9, Lang:t('error.no_weapon'), 2000, 0, 'mp_lobby_textures', 'cross')
         end
     else
-        exports['qbr-core']:Notify(Lang:t('error.no_weapon'), "error")
+        exports['qbr-core']:Notify(9, Lang:t('error.no_weapon'), 2000, 0, 'mp_lobby_textures', 'cross')
     end
 end)
 
@@ -128,11 +128,11 @@ RegisterNetEvent("weapons:client:EquipAttachment", function(ItemData, attachment
             if WeaponAttachments[WeaponData.name][attachment]['item'] == ItemData.name then
                 TriggerServerEvent("weapons:server:EquipAttachment", ItemData, CurrentWeaponData, WeaponAttachments[WeaponData.name][attachment])
             else
-                exports['qbr-core']:Notify(Lang:t('error.no_support_attachment'), "error")
+                exports['qbr-core']:Notify(9, Lang:t('error.no_support_attachment'), 2000, 0, 'mp_lobby_textures', 'cross')
             end
         end
     else
-        exports['qbr-core']:Notify(Lang:t('error.no_weapon_in_hand'), "error")
+        exports['qbr-core']:Notify(9, Lang:t('error.no_weapon_in_hand'), 2000, 0, 'mp_lobby_textures', 'cross')
     end
 end)
 
@@ -203,7 +203,7 @@ CreateThread(function()
                     else
                         if weapon ~= -1569615261 then
                             TriggerEvent('inventory:client:CheckWeapon', sharedWeapons[weapon]["name"])
-                            exports['qbr-core']:Notify(Lang:t('error.weapon_broken'), "error")
+                            exports['qbr-core']:Notify(9, Lang:t('error.weapon_broken'), 2000, 0, 'mp_lobby_textures', 'cross')
                             MultiplierAmount = 0
                         end
                     end

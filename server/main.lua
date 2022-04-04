@@ -66,7 +66,7 @@ exports['qbr-core']:CreateCallback('weapons:server:RemoveAttachment', function(s
                 Player.Functions.SetInventory(Player.PlayerData.items, true)
                 Player.Functions.AddItem(AttachmentComponent.item, 1)
                 TriggerClientEvent('inventory:client:ItemBox', src, sharedItems[AttachmentComponent.item], "add")
-                TriggerClientEvent("QBCore:Notify", src, Lang:t('info.removed_attachment', { value = sharedItems[AttachmentComponent.item].label }), "error")
+                TriggerClientEvent("QBCore:Notify", src, Lang:t('info.removed_attachment', { value = sharedItems[AttachmentComponent.item].label }), 2000, 0, 'mp_lobby_textures', 'cross')
                 cb(Inventory[ItemData.slot].info.attachments)
             else
                 cb(false)
@@ -124,15 +124,15 @@ exports['qbr-core']:CreateCallback("weapons:server:RepairWeapon", function(sourc
                     cb(false)
                 end
             else
-                TriggerClientEvent("QBCore:Notify", src, Lang:t('error.no_damage_on_weapon'), "error")
+                TriggerClientEvent("QBCore:Notify", src, Lang:t('error.no_damage_on_weapon'), 2000, 0, 'mp_lobby_textures', 'cross')
                 cb(false)
             end
         else
-            TriggerClientEvent("QBCore:Notify", src, Lang:t('error.no_damage_on_weapon'), "error")
+            TriggerClientEvent("QBCore:Notify", src, Lang:t('error.no_damage_on_weapon'), 2000, 0, 'mp_lobby_textures', 'cross')
             cb(false)
         end
     else
-        TriggerClientEvent('QBCore:Notify', src, Lang:t('error.no_weapon_in_hand'), "error")
+        TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.no_weapon_in_hand'), 2000, 0, 'mp_lobby_textures', 'cross')
         TriggerClientEvent('weapons:client:SetCurrentWeapon', src, {}, false)
         cb(false)
     end
@@ -199,7 +199,7 @@ RegisterNetEvent('weapons:server:UpdateWeaponQuality', function(data, RepeatAmou
                     else
                         WeaponSlot.info.quality = 0
                         -- TriggerClientEvent('inventory:client:UseWeapon', src, data)
-                        TriggerClientEvent('QBCore:Notify', src, Lang:t('error.weapon_broken_need_repair'), "error")
+                        TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.weapon_broken_need_repair'), 2000, 0, 'mp_lobby_textures', 'cross')
                         break
                     end
                 end
@@ -211,7 +211,7 @@ RegisterNetEvent('weapons:server:UpdateWeaponQuality', function(data, RepeatAmou
                     else
                         WeaponSlot.info.quality = 0
                         -- TriggerClientEvent('inventory:client:UseWeapon', src, data)
-                        TriggerClientEvent('QBCore:Notify', src, Lang:t('error.weapon_broken_need_repair'), "error")
+                        TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.weapon_broken_need_repair'), 2000, 0, 'mp_lobby_textures', 'cross')
                         break
                     end
                 end
