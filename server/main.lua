@@ -66,7 +66,7 @@ exports['qbr-core']:CreateCallback('weapons:server:RemoveAttachment', function(s
                 Player.Functions.SetInventory(Player.PlayerData.items, true)
                 Player.Functions.AddItem(AttachmentComponent.item, 1)
                 TriggerClientEvent('inventory:client:ItemBox', src, sharedItems[AttachmentComponent.item], "add")
-                TriggerClientEvent("QBCore:Notify", src, Lang:t('info.removed_attachment', { value = sharedItems[AttachmentComponent.item].label }), 2000, 0, 'mp_lobby_textures', 'cross')
+                TriggerClientEvent("QBCore:Notify", src, Lang:t('info.removed_attachment', { value = sharedItems[AttachmentComponent.item].label }), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
                 cb(Inventory[ItemData.slot].info.attachments)
             else
                 cb(false)
@@ -124,15 +124,15 @@ exports['qbr-core']:CreateCallback("weapons:server:RepairWeapon", function(sourc
                     cb(false)
                 end
             else
-                TriggerClientEvent("QBCore:Notify", src, Lang:t('error.no_damage_on_weapon'), 2000, 0, 'mp_lobby_textures', 'cross')
+                TriggerClientEvent("QBCore:Notify", src, Lang:t('error.no_damage_on_weapon'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
                 cb(false)
             end
         else
-            TriggerClientEvent("QBCore:Notify", src, Lang:t('error.no_damage_on_weapon'), 2000, 0, 'mp_lobby_textures', 'cross')
+            TriggerClientEvent("QBCore:Notify", src, Lang:t('error.no_damage_on_weapon'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
             cb(false)
         end
     else
-        TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.no_weapon_in_hand'), 2000, 0, 'mp_lobby_textures', 'cross')
+        TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.no_weapon_in_hand'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
         TriggerClientEvent('weapons:client:SetCurrentWeapon', src, {}, false)
         cb(false)
     end
@@ -199,7 +199,7 @@ RegisterNetEvent('weapons:server:UpdateWeaponQuality', function(data, RepeatAmou
                     else
                         WeaponSlot.info.quality = 0
                         -- TriggerClientEvent('inventory:client:UseWeapon', src, data)
-                        TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.weapon_broken_need_repair'), 2000, 0, 'mp_lobby_textures', 'cross')
+                        TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.weapon_broken_need_repair'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
                         break
                     end
                 end
@@ -211,7 +211,7 @@ RegisterNetEvent('weapons:server:UpdateWeaponQuality', function(data, RepeatAmou
                     else
                         WeaponSlot.info.quality = 0
                         -- TriggerClientEvent('inventory:client:UseWeapon', src, data)
-                        TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.weapon_broken_need_repair'), 2000, 0, 'mp_lobby_textures', 'cross')
+                        TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.weapon_broken_need_repair'), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
                         break
                     end
                 end
@@ -253,7 +253,7 @@ RegisterNetEvent("weapons:server:EquipAttachment", function(ItemData, CurrentWea
                     TriggerClientEvent('inventory:client:ItemBox', src, ItemData, "remove")
                 end)
             else
-                TriggerClientEvent("QBCore:Notify", src, Lang:t('error.attachment_already_on_weapon' , { value = sharedItems[AttachmentData.item].label }), "error", 3500)
+				TriggerClientEvent('QBCore:Notify', src, 9, Lang:t('error.attachment_already_on_weapon', { value = sharedItems[AttachmentData.item].label }), 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
             end
         else
             Inventory[CurrentWeaponData.slot].info.attachments = {}
