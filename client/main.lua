@@ -83,13 +83,12 @@ end)
 
 RegisterNetEvent('weapon:client:AddAmmo', function(type, amount, itemData)
     local ped = PlayerPedId()
-    local weapon = GetSelectedPedWeapon(ped)
+    local weapon = Citizen.InvokeNative(0x8425C5F057012DAB,ped)
     local sharedItems = exports['qbr-core']:GetItems()
     if CurrentWeaponData then
-        if sharedWeapons[weapon]["name"] ~= "weapon_unarmed" and sharedWeapons[weapon]["ammotype"] == type:upper() then
+        if sharedWeapons[weapon]["name"] ~= "weapon_unarmed" and sharedWeapons[weapon]["name"] ~= "weapon_bow" and sharedWeapons[weapon]["name"] ~= "weapon_bow_improved" and sharedWeapons[weapon]["ammotype"] == type:upper() then
             local total = Citizen.InvokeNative(0x015A522136D7F951, PlayerPedId(), weapon, Citizen.ResultAsInteger())
-            local maxAmmo = Citizen.InvokeNative(0xDC16122C7A20C933, PlayerPedId(), weapon, Citizen.ResultAsInteger())
-            if total < maxAmmo then
+            if total + (amount/2) < 200 then
                 exports['qbr-core']:Progressbar("taking_bullets", Lang:t('info.loading_bullets'), math.random(4000, 6000), false, true, {
                     disableMovement = false,
                     disableCarMovement = false,
@@ -97,7 +96,30 @@ RegisterNetEvent('weapon:client:AddAmmo', function(type, amount, itemData)
                     disableCombat = true,
                 }, {}, {}, {}, function() -- Done
                     if sharedWeapons[weapon] then
-                        Citizen.InvokeNative(0xB190BCA3F4042F95, ped, weapon, retval, 0xCA3454E6)
+                        Citizen.InvokeNative(0xB190BCA3F4042F95, ped, weapon, amount, 0xCA3454E6)
+                        TaskReloadWeapon(ped)
+                        TriggerServerEvent("weapons:server:AddWeaponAmmo", CurrentWeaponData, total + amount)
+                        TriggerServerEvent('QBCore:Server:RemoveItem', itemData.name, 1, itemData.slot)
+                        TriggerEvent('inventory:client:ItemBox', sharedItems[itemData.name], "remove")
+                        TriggerEvent('QBCore:Notify', Lang:t('success.reloaded'), 2000, 0, 'hud_textures', 'check')
+                    end
+                end, function()
+                    exports['qbr-core']:Notify(9, Lang:t('error.canceled'), 2000, 0, 'mp_lobby_textures', 'cross')
+                end)
+            else
+                exports['qbr-core']:Notify(9, Lang:t('error.max_ammo'), 2000, 0, 'mp_lobby_textures', 'cross')
+            end
+        elseif sharedWeapons[weapon]["name"] == "weapon_bow" or sharedWeapons[weapon]["name"] == "weapon_bow_improved" and sharedWeapons[weapon]["ammotype"] == type:upper() then
+            local total = Citizen.InvokeNative(0x015A522136D7F951, PlayerPedId(), weapon, Citizen.ResultAsInteger())
+            if total + (amount/2) < 40 then
+                exports['qbr-core']:Progressbar("taking_bullets", Lang:t('info.loading_bullets'), math.random(4000, 6000), false, true, {
+                    disableMovement = false,
+                    disableCarMovement = false,
+                    disableMouse = false,
+                    disableCombat = true,
+                }, {}, {}, {}, function() -- Done
+                    if sharedWeapons[weapon] then
+                        Citizen.InvokeNative(0xB190BCA3F4042F95, ped, weapon, amount, 0xCA3454E6)
                         TaskReloadWeapon(ped)
                         TriggerServerEvent("weapons:server:AddWeaponAmmo", CurrentWeaponData, total + amount)
                         TriggerServerEvent('QBCore:Server:RemoveItem', itemData.name, 1, itemData.slot)

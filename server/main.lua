@@ -286,41 +286,30 @@ end, "god")
 -- Items
 
 -- AMMO
-exports['qbr-core']:CreateUseableItem('pistol_ammo', function(source, item)
-    TriggerClientEvent('weapon:client:AddAmmo', source, 'AMMO_PISTOL', 12, item)
-end)
-
-exports['qbr-core']:CreateUseableItem('rifle_ammo', function(source, item)
-    TriggerClientEvent('weapon:client:AddAmmo', source, 'AMMO_RIFLE', 30, item)
-end)
-
-exports['qbr-core']:CreateUseableItem('smg_ammo', function(source, item)
-    TriggerClientEvent('weapon:client:AddAmmo', source, 'AMMO_SMG', 20, item)
-end)
-
-exports['qbr-core']:CreateUseableItem('shotgun_ammo', function(source, item)
-    TriggerClientEvent('weapon:client:AddAmmo', source, 'AMMO_SHOTGUN', 10, item)
-end)
-
-exports['qbr-core']:CreateUseableItem('mg_ammo', function(source, item)
-    TriggerClientEvent('weapon:client:AddAmmo', source, 'AMMO_MG', 30, item)
-end)
-
-exports['qbr-core']:CreateUseableItem('snp_ammo', function(source, item)
-    TriggerClientEvent('weapon:client:AddAmmo', source, 'AMMO_SNIPER', 10, item)
-end)
-
-exports['qbr-core']:CreateUseableItem('emp_ammo', function(source, item)
-    TriggerClientEvent('weapon:client:AddAmmo', source, 'AMMO_EMPLAUNCHER', 10, item)
-end)
-
-exports['qbr-core']:CreateUseableItem("repeater_ammo", function(source, item)
+exports['qbr-core']:CreateUseableItem("ammo_repeater", function(source, item)
     TriggerClientEvent('weapon:client:AddAmmo', source, 'AMMO_REPEATER', 12, item)
 end)
 
-exports['qbr-core']:CreateUseableItem("revolver_ammo", function(source, item)
+exports['qbr-core']:CreateUseableItem("ammo_revolver", function(source, item)
     TriggerClientEvent('weapon:client:AddAmmo', source, 'AMMO_REVOLVER', 12, item)
 end)
+
+exports['qbr-core']:CreateUseableItem("ammo_rifle", function(source, item)
+    TriggerClientEvent('weapon:client:AddAmmo', source, 'AMMO_RIFLE', 12, item)
+end)
+
+exports['qbr-core']:CreateUseableItem("ammo_pistol", function(source, item)
+    TriggerClientEvent('weapon:client:AddAmmo', source, 'AMMO_PISTOL', 12, item)
+end)
+
+exports['qbr-core']:CreateUseableItem("ammo_shotgun", function(source, item)
+    TriggerClientEvent('weapon:client:AddAmmo', source, 'AMMO_SHOTGUN', 12, item)
+end)
+
+exports['qbr-core']:CreateUseableItem("ammo_arrow", function(source, item)
+    TriggerClientEvent('weapon:client:AddAmmo', source, 'AMMO_ARROW', 12, item)
+end)
+
 
 -- TINTS
 exports['qbr-core']:CreateUseableItem('weapontint_black', function(source)
