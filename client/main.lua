@@ -167,7 +167,7 @@ end)
 CreateThread(function()
     while true do
         local ped = PlayerPedId()
-		if Citizen.InvokeNative(0xADF692B254977C0C, ped, 7) == 1 and IsControlJustReleased(0, 0x07CE1E61) or IsControlJustReleased(0, 0xF84FA74F) then
+	if Citizen.InvokeNative(0xD240123E, ped) ~= -1569615261 and Citizen.InvokeNative(0xADF692B254977C0C, ped, 7) == 1 and IsControlJustReleased(0, 0x07CE1E61) or IsControlJustReleased(0, 0xF84FA74F) then
             local weapon = GetCurrentPedWeapon(ped)
             local ammo = GetAmmoInPedWeapon(ped, weapon)
             for k,v in pairs(allowList) do
