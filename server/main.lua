@@ -6,6 +6,13 @@ local sharedItems = exports['qbr-core']:GetItems()
 ---- EVENTS
 ---------------------------------------------------------------------
 
+RegisterNetEvent('qbr-weapons:server:UsedThrowable', function(name, slot)
+    local src = source
+    local Player = exports['qbr-core']:GetPlayer(src)
+    if not Player then return end
+    Player.Functions.RemoveItem(name, 1, slot)
+end)
+
 RegisterNetEvent("qbr-weapons:server:UpdateWeaponData", function(slot, amount, quality)
     local src = source
     local Player = exports['qbr-core']:GetPlayer(src)

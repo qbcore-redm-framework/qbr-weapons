@@ -46,7 +46,8 @@ local function OpenMenu(index)
         }
     elseif not data.IsRepairing and curWeapData and next(curWeapData) then
         local WeaponData = sharedWeapons[joaat(curWeapData.name)]
-        local WeaponClass = (exports['qbr-core']:SplitStr(WeaponData.ammotype, "_")[2]):lower()
+        local WeaponClass = WeaponData.ammotype and (exports['qbr-core']:SplitStr(WeaponData.ammotype, "_")[2]):lower()
+        if not WeaponClass then return end
         RepairMenu[#RepairMenu+1] = {
             header = "Repair Weapon",
             txt = "Weapon: "..sharedItems[curWeapData.name]['label'].." Price: "..Config.WeaponRepairCosts[WeaponClass],
@@ -83,26 +84,36 @@ RegisterNetEvent('qbr-weapons:client:UseWeapon', function(weaponData)
     local ped = PlayerPedId()
     local hash = joaat(weaponData.name)
     local weaponName = tostring(weaponData.name)
-    if curWeapData and curWeapData.info.serie == weaponData.info.serie then
+    if curWeapData and curWeapData.name == weaponName then
         RemoveWeaponFromPed(ped, hash)
         curWeapData = nil
-    elseif curWeapData and curWeapData.info.serie ~= weaponData.info.serie then
+    elseif curWeapData and curWeapData.name ~= weaponName then
         local curHash = joaat(curWeapData.name)
         RemoveWeaponFromPed(ped, curHash)
         curWeapData = nil
         Wait(500)
-        Citizen.InvokeNative(0xB282DC6EBD803C75, ped, hash, 0, false, true) --GiveDelayedWeaponToPed
-        SetCurrentPedWeapon(ped, hash, true)
-        SetPedAmmo(ped, hash, weaponData.info.ammo or 0)
         curWeapData = weaponData
-        if string.find(weaponName, 'lasso') then return end
+        Citizen.InvokeNative(0xB282DC6EBD803C75, ped, hash, 0, false, true) --GiveDelayedWeaponToPed
+        if string.find(weaponName, 'thrown') then
+			Citizen.InvokeNative(0x106A811C6D3035F3, ped, Citizen.InvokeNative(0x5C2EA6C44F515F34, hash), 1, 752097756)
+            TriggerServerEvent('qbr-weapons:server:UsedThrowable', weaponName, weaponData.slot)
+            curWeapData = nil
+        end
+        SetCurrentPedWeapon(ped, hash, true)
+        if string.find(weaponName, 'lasso') or string.find(weaponName, 'thrown') then return end
+        SetPedAmmo(ped, hash, weaponData.info.ammo or 0)
         ShootingThread(hash, ped, weaponData.info.ammo or 0)
     elseif not curWeapData then
-        Citizen.InvokeNative(0xB282DC6EBD803C75, ped, hash, 0, false, true)  --GiveDelayedWeaponToPed
-        SetCurrentPedWeapon(ped, hash, true)
-        SetPedAmmo(ped, hash, weaponData.info.ammo or 0)
         curWeapData = weaponData
-        if string.find(weaponName, 'lasso') then return end
+        Citizen.InvokeNative(0xB282DC6EBD803C75, ped, hash, 0, false, true)  --GiveDelayedWeaponToPed
+        if string.find(weaponName, 'thrown') then
+			Citizen.InvokeNative(0x106A811C6D3035F3, ped, Citizen.InvokeNative(0x5C2EA6C44F515F34, hash), 1, 752097756)
+            TriggerServerEvent('qbr-weapons:server:UsedThrowable', weaponName, weaponData.slot)
+            curWeapData = nil
+        end
+        SetCurrentPedWeapon(ped, hash, true)
+        if string.find(weaponName, 'lasso') or string.find(weaponName, 'thrown') then return end
+        SetPedAmmo(ped, hash, weaponData.info.ammo or 0)
         ShootingThread(hash, ped, weaponData.info.ammo or 0)
     end
 end)
@@ -114,7 +125,8 @@ RegisterNetEvent('qbr-weapons:client:AddAmmo', function(type, amount, itemData)
         if data["name"] ~= "weapon_unarmed" and data["ammotype"] == type:upper() then
             local ped = PlayerPedId()
             local total = GetAmmoInPedWeapon(ped, weapon)
-            if total + (amount/2) < Config.MaxAmmo[GetWeapontypeGroup(weapon)] then
+            local maxammo = Config.MaxAmmo[GetWeapontypeGroup(weapon)] or 12
+            if total + (amount/2) < maxammo then
                 exports['qbr-core']:Progressbar("taking_bullets", Lang:t('info.loading_bullets'), math.random(4000, 6000), false, true, {
                     disableCombat = true,
                 }, {}, {}, {}, function() -- Done
