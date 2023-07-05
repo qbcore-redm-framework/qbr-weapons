@@ -11,22 +11,13 @@ local Translations = {
         attachment_already_on_weapon = 'You already have a %{value} on your weapon.'
     },
     success = {
-        reloaded = 'Reloaded'
+        reloaded = 'Reloaded',
+        weapon_ready = 'Your Weapon is Ready'
     },
     info = {
         loading_bullets = 'Loading Bullets',
-        repairshop_not_usable = 'The repairshop in this moment is ~r~NOT~w~ usable.',
-        weapon_will_repair = 'Your weapon will be repaired.',
-        take_weapon_back = '[E] - Take Weapon Back',
-        repair_weapon_price = '[E] Repair Weapon, ~g~$%{value}~w~',
-        removed_attachment = 'You removed %{value} from your weapon!',
-        hp_of_weapon = 'Durability of your weapon'
-    },
-    mail = {
-        sender = 'Tyrone',
-        subject = 'Repair',
-        message = 'Your %{value} is repaired u can pick it up at the location. <br><br> Peace out madafaka'
-    },
+        repair_button = 'Fix Weapons'
+    }
 }
 
 Lang = Locale:new({
