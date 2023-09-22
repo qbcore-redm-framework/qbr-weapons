@@ -94,12 +94,7 @@ AddStateBagChangeHandler('isLoggedIn', ('player:%s'):format(sid), function(_, _,
     Citizen.InvokeNative(0x1B83C0DEEBCBB214, ped)
     ResetWeapons()
 end)
---[[
-RegisterNetEvent('qbr-inventory:client:UpdateItems', function(slot, data)
-    if not slot or slot > 5 then return end
-    ResetWeapons()
-end)
-]]--
+
 RegisterNetEvent('qbr-weapons:client:CheckWeapon', ResetWeapons)
 
 RegisterNetEvent('qbr-weapons:client:UseWeapon', function(weaponData, Inspect)
