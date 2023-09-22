@@ -61,7 +61,7 @@ exports['qbr-core']:CreateCallback("qbr-weapons:server:RepairWeapon", function(s
     local Timeout = math.random(5 * minute, 10 * minute)
     local itemData = Player.PlayerData.items[data.slot]
     local WeaponData = sharedWeapons[joaat(itemData.name)]
-    local WeaponClass = (exports['qbr-core']:SplitStr(WeaponData.ammotype, "_")[2]):lower()
+    local WeaponClass = string.match(WeaponData.ammotype, "_(.+)"):lower()
     if itemData then
         if itemData.info.quality then
             if itemData.info.quality ~= 100 then
