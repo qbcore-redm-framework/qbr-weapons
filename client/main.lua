@@ -31,7 +31,7 @@ local function OpenMenu(index)
         }
     elseif not data.IsRepairing and curWeapData and next(curWeapData) then
         local WeaponData = sharedWeapons[joaat(curWeapData.name)]
-        local WeaponClass = WeaponData.ammotype and (exports['qbr-core']:SplitStr(WeaponData.ammotype, "_")[2]):lower()
+        local WeaponClass = WeaponData.ammotype and string.match(WeaponData.ammotype, "_(.+)"):lower()
         if not WeaponClass then return end
         RepairMenu[#RepairMenu+1] = {
             header = "Repair Weapon",
@@ -91,7 +91,7 @@ AddStateBagChangeHandler('isLoggedIn', ('player:%s'):format(sid), function(_, _,
     SetPedConfigFlag(ped, 445, true) -- Disable Door Ramming
     SetPedConfigFlag(ped, 40, true) -- Allow Attacking
     SetPedConfigFlag(ped, 305, true) -- Disable Head Gore
-    Citizen.InvokeNative(0x1B83C0DEEBCBB214, ped)
+    Citizen.InvokeNative(0x1B83C0DEEBCBB214, ped) -- RemoveAllPedAmmo
     ResetWeapons()
 end)
 
@@ -101,7 +101,7 @@ RegisterNetEvent('qbr-weapons:client:UseWeapon', function(weaponData, Inspect)
     local ped = PlayerPedId()
     local hash = joaat(weaponData.name)
     local weaponName = tostring(weaponData.name)
-    local weapon = Citizen.InvokeNative(0x8425C5F057012DAB, ped)
+    local weapon = Citizen.InvokeNative(0x8425C5F057012DAB, ped) -- GetPedCurrentHeldWeapon
     local current = weapon ~= `WEAPON_UNARMED` and weapon
     local group = GetWeapontypeGroup(hash)
     if current and current == hash then
@@ -111,7 +111,7 @@ RegisterNetEvent('qbr-weapons:client:UseWeapon', function(weaponData, Inspect)
         Citizen.InvokeNative(0x1B83C0DEEBCBB214, ped)
         SetCurrentPedWeapon(ped, `WEAPON_UNARMED`, true)
         if string.find(weaponName, 'thrown') then
-			Citizen.InvokeNative(0x106A811C6D3035F3, ped, Citizen.InvokeNative(0x5C2EA6C44F515F34, hash), 1, 752097756)
+			Citizen.InvokeNative(0x106A811C6D3035F3, ped, Citizen.InvokeNative(0x5C2EA6C44F515F34, hash), 1, 752097756) -- AddAmmoToPedByType
             TriggerServerEvent('qbr-weapons:server:UsedThrowable', weaponName, weaponData.slot)
         end
         Wait(500)
@@ -126,7 +126,7 @@ RegisterNetEvent('qbr-weapons:client:UseWeapon', function(weaponData, Inspect)
     else
         Citizen.InvokeNative(0x1B83C0DEEBCBB214, ped)
         if string.find(weaponName, 'thrown') then
-			Citizen.InvokeNative(0x106A811C6D3035F3, ped, Citizen.InvokeNative(0x5C2EA6C44F515F34, hash), 1, 752097756)
+			Citizen.InvokeNative(0x106A811C6D3035F3, ped, Citizen.InvokeNative(0x5C2EA6C44F515F34, hash), 1, 752097756) -- AddAmmoToPedByType
             TriggerServerEvent('qbr-weapons:server:UsedThrowable', weaponName, weaponData.slot)
         end
         Wait(100)
@@ -185,10 +185,10 @@ CreateThread(function()
     SetWeaponsNoAutoswap(true)
     while true do
         local ped = PlayerPedId()
-        local holdingweap = Citizen.InvokeNative(0x8425C5F057012DAB,ped)
+        local holdingweap = Citizen.InvokeNative(0x8425C5F057012DAB,ped) -- GetPedCurrentHeldWeapon
         local weapon = Weapons[holdingweap]
         if weapon then
-            local IsGun = Citizen.InvokeNative(0x705BE297EEBDB95D, holdingweap)
+            local IsGun = Citizen.InvokeNative(0x705BE297EEBDB95D, holdingweap) -- IsWeaponAGun
             if IsGun then
                 local currentammo = GetAmmoInPedWeapon(ped, holdingweap)
                 if currentammo ~= weapon.info.ammo then
