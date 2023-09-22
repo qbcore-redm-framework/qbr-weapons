@@ -45,7 +45,7 @@ end)
 ---------------------------------------------------------------------
 
 for i=1, #Ammos do
-    exports['qbr-inventory']:CreateUseableItem("ammo_"..Ammos[i], function(source, item)
+    exports['qbr-core']:CreateUseableItem("ammo_"..Ammos[i], function(source, item)
         TriggerClientEvent('qbr-weapons:client:AddAmmo', source, 'AMMO_'..Ammos[i]:upper(), 6, item)
     end)
 end
