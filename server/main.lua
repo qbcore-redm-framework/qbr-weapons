@@ -1,4 +1,4 @@
-local Ammos = {'repeater', 'revolver', 'rifle', 'pistol', 'shotgun', 'arrow'}
+local Ammos = {'repeater', 'revolver', 'rifle', 'pistol', 'shotgun', 'arrow', '22'}
 local sharedWeapons = exports['qbr-core']:GetWeapons()
 local sharedItems = exports['qbr-core']:GetItems()
 
@@ -16,6 +16,7 @@ end)
 RegisterNetEvent("qbr-weapons:server:UpdateWeaponData", function(slot, amount, quality)
     local src = source
     local Player = exports['qbr-core']:GetPlayer(src)
+    if not Player then return end
     local amount = tonumber(amount)
     if not slot or not Player.PlayerData.items[slot] then return end
     if quality then
@@ -25,7 +26,7 @@ RegisterNetEvent("qbr-weapons:server:UpdateWeaponData", function(slot, amount, q
         Player.PlayerData.items[slot].info.quality -= quality
     end
     Player.PlayerData.items[slot].info.ammo = amount
-    Player.Functions.SetInventory(Player.PlayerData.items, true)
+    Player.Functions.SetInventory(Player.PlayerData.items[slot], slot)
 end)
 
 RegisterNetEvent("qbr-weapons:server:TakeBackWeapon", function(data)
@@ -45,7 +46,7 @@ end)
 
 for i=1, #Ammos do
     exports['qbr-core']:CreateUseableItem("ammo_"..Ammos[i], function(source, item)
-        TriggerClientEvent('qbr-weapons:client:AddAmmo', source, 'AMMO_'..Ammos[i]:upper(), 12, item)
+        TriggerClientEvent('qbr-weapons:client:AddAmmo', source, 'AMMO_'..Ammos[i]:upper(), 6, item)
     end)
 end
 
@@ -60,7 +61,7 @@ exports['qbr-core']:CreateCallback("qbr-weapons:server:RepairWeapon", function(s
     local Timeout = math.random(5 * minute, 10 * minute)
     local itemData = Player.PlayerData.items[data.slot]
     local WeaponData = sharedWeapons[joaat(itemData.name)]
-    local WeaponClass = (exports['qbr-core']:SplitStr(WeaponData.ammotype, "_")[2]):lower()
+    local WeaponClass = string.match(WeaponData.ammotype, "_(.+)"):lower()
     if itemData then
         if itemData.info.quality then
             if itemData.info.quality ~= 100 then

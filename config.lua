@@ -15,11 +15,11 @@ Config.WeaponRepairCosts = {
 }
 
 Config.MaxAmmo = {
-    [`GROUP_PISTOL`] = 24,
-    [`GROUP_RIFLE`] = 24,
-    [`GROUP_REVOLVER`] = 24,
-    [`GROUP_SHOTGUN`] = 12,
-    [`GROUP_BOW`] = 12,
+    [`GROUP_PISTOL`] = 6,
+    [`GROUP_RIFLE`] = 12,
+    [`GROUP_REVOLVER`] = 6,
+    [`GROUP_SHOTGUN`] = 6,
+    [`GROUP_BOW`] = 6,
 }
 
 Config.DurabilityMultiplier = {
