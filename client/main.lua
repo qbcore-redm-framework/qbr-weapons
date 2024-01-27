@@ -151,7 +151,11 @@ RegisterNetEvent('qbr-weapons:client:AddAmmo', function(atype, amount, itemData)
             exports['qbr-core']:Progressbar("taking_bullets", Lang:t('info.loading_bullets'), math.random(4000, 6000), false, true, {
                 disableCombat = true,
             }, {}, {}, {}, function() -- Done
-                if Weapons[weapon] then
+                local weaponData = Weapons[weapon]
+                if weaponData then
+                    if weaponData.info?.quality <= 0 then
+                        return  exports['qbr-core']:Notify(9, 'Cannot Reload Broken Weapon', 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
+                    end
                     if atype == 'AMMO_ARROW' then
                         SetPedAmmo(ped, weapon, maxammo)
                         SetCurrentPedWeapon(ped, weapon, true)
@@ -195,6 +199,9 @@ CreateThread(function()
                     local diff = weapon.info.ammo - currentammo
                     weapon.info.ammo = currentammo
                     local DecreaseAmount = Config.DurabilityMultiplier[holdingweap] * diff
+					if weapon.info?.quality then 
+                        Weapons[holdingweap].info.quality = weapon.info.quality - DecreaseAmount 
+                    end
                     TriggerServerEvent('qbr-weapons:server:UpdateWeaponData', weapon.slot, currentammo, DecreaseAmount > 0 and DecreaseAmount)
                 end
             end
