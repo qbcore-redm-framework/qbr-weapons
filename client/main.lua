@@ -153,7 +153,7 @@ RegisterNetEvent('qbr-weapons:client:AddAmmo', function(atype, amount, itemData)
             }, {}, {}, {}, function() -- Done
                 local weaponData = Weapons[weapon]
                 if weaponData then
-                    if weaponData.info?.quality and weaponData.info?.quality <= 0 then
+                    if weaponData.info?.quality and weaponData.info.quality <= 0 then
                         return  exports['qbr-core']:Notify(9, 'Cannot Reload Broken Weapon', 5000, 0, 'mp_lobby_textures', 'cross', 'COLOR_WHITE')
                     end
                     if atype == 'AMMO_ARROW' then
